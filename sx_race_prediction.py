@@ -13,6 +13,9 @@ import requests
 import sys
 from bs4 import BeautifulSoup
 import urllib
+from pymongo import MongoClient
+
+db = client.oleg
 
 def store_races(db):
 	# accesses amasupercross.com and parsers the website to read the race locations/names
