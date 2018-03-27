@@ -16,13 +16,14 @@ import urllib
 from pymongo import MongoClient
 
 db = client.oleg
+response = requests.get("https://archives.amasupercross.com/")
+html = response.text
 
-def store_races(db):
+def store_races():
 	# accesses amasupercross.com and parsers the website to read the race locations/names
 	# stores the race names into database for future reference
 	# db is the object for the database retrieved in main
-	response = requests.get("https://archives.amasupercross.com/")
-	html = response.text
+	
 	soup = BeautifulSoup(html, "html.parser")
 
 	# grabs iframe from archive website and joins the iframe url to main url
@@ -46,6 +47,10 @@ def store_races(db):
 		race = rows[0].find("td").a.contents[0]
 		db.races.insert({"name": race})
 
+	return
+
+def open_race_page()
+	
 # this line will parse the anchor href with the main url
 print (urllib.parse.urljoin("https://archives.amasupercross.com/", race))
 
