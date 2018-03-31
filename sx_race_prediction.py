@@ -10,48 +10,40 @@
 # saves their respective position in the database
 
 import requests
-import sys
-from bs4 import BeautifulSoup
 import urllib
-from pymongo import MongoClient
 
-db = client.oleg
+from pprint import pprint
+from datetime import datetime
+from bs4 import BeautifulSoup
+from pymongo import MongoClient
+# import local files
+import find_races
+
+# connects to mongodb
+# accesses the ama supercross website
+
+client = MongoClient()
+db = client.supercross
 response = requests.get("https://archives.amasupercross.com/")
 html = response.text
 
-def store_races():
-	# accesses amasupercross.com and parsers the website to read the race locations/names
-	# stores the race names into database for future reference
-	# db is the object for the database retrieved in main
-	
-	soup = BeautifulSoup(html, "html.parser")
+# checks if the current year race locations are 
+# already saved in the db under "races"
+if not db.races.find_one( {"year": datetime.now().year} ):
+	find_races.find_races()
+	pprint("Added 2018 races")
+	pprint(db.races.find_one())
+else:
+	pprint("Not added: Found")
+	pprint(db.races.find_one())
 
-	# grabs iframe from archive website and joins the iframe url to main url
-	iframe = soup.find(id = "ifrm")["src"]
-	iframe_url = urllib.parse.urljoin("https://archives.amasupercross.com/", iframe)
-
-	# creates new request and soup for the iframe portion of webpage
-	iframe_response = urllib.request.urlopen(iframe_url)
-	iframe_soup = BeautifulSoup(iframe_response, "html.parser")
-
-	# gets the tables from the iframe and selects the one for years 2018-2015
-	tables = iframe_soup.find_all("table")
-	table = tables[1]
-
-	#gets the rows of the table and removes the first one which is just formatting
-	rows = table.find_all("tr")	
-	rows.pop(0)
-	# gets the string inside the anchor for the race name
-	# saves string into the database
-	for row in rows:
-		race = rows[0].find("td").a.contents[0]
-		db.races.insert({"name": race})
-
-	return
-
-def open_race_page()
-	
-# this line will parse the anchor href with the main url
-print (urllib.parse.urljoin("https://archives.amasupercross.com/", race))
-
-
+# gets practice times of the given race
+def get_practice_times(race_name):
+	# Get event name from db.races
+	# generate url for the race
+	# travel to the race event page
+	# open up the first and second practice lap times
+	# find min for each individual rider
+	# assign rank for fastest to slowest rider
+	# save ranking to each riders db.riders document
+	return 
